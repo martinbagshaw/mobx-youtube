@@ -6,13 +6,13 @@ import Todo from './components/Todo';
 import Videos from './components/Videos';
 
 class App extends React.Component {
-
   render() {
-
     return (
       <div className="App">
         <Todo />
-        <Videos />
+        <div className="grid">
+          <Videos />
+        </div>
       </div>
     );
   }
