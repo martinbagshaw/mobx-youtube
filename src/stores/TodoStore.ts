@@ -1,6 +1,6 @@
 import { observable, makeObservable, action, computed } from 'mobx';
 class TodoStore {
-  todos = [];
+  todos: string[] = [];
   constructor() {
     makeObservable(this, {
       todos: observable,
@@ -9,11 +9,11 @@ class TodoStore {
     });
   }
 
-  addtodo = (todo) => {
+  addtodo = (todo: string) => {
     this.todos.push(todo);
   };
 
-  get todoCount() {
+  get todoCount(): number {
     return this.todos.length;
   }
 }

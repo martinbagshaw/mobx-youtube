@@ -30,8 +30,21 @@ type Snippet = {
 type AllVideo = {
   etag: string;
   id: string;
-  king: string;
+  kind: string;
   snippet: Snippet;
+};
+
+type CategorySnippet = {
+  assignable: boolean;
+  channelId: string;
+  title: string;
+};
+
+type Category = {
+  etag: string;
+  id: string;
+  kind: string;
+  snippet: CategorySnippet;
 };
 
 // Get All Videos & Get Video Ids
@@ -61,7 +74,7 @@ const getVideoIds = async (): Promise<ErrorRes | { response: string[] }> => {
     const result = await fetch(
       `${base}${videoBase}${playlistId}&key=${YOUTUBE_API_KEY}&maxResults=12`
     );
-    const { error, items } = await result.json();
+    const { error, items }: { error: any; items: AllVideo[] } = await result.json();
     return error
       ? errorVideos
       : {
@@ -102,7 +115,7 @@ export const getCategories = async (
     const { error, items } = await result.json();
     if (error) return errorCategories;
     // filter the response here:
-    const filteredResponse = items.map((i) => {
+    const filteredResponse = items.map((i: Category) => {
       const { id, snippet } = i;
       const { channelId, title } = snippet;
       return {
@@ -129,7 +142,8 @@ export const getCategories = async (
 export const getVideos = async (): Promise<ErrorRes | { response: VideoRes[] }> => {
   const videoBase = 'videos?part=snippet';
   try {
-    const { error: idsError, response } = await getVideoIds();
+    const a: ErrorRes | { response: string[] } = await getVideoIds();
+    const { error: idsError, response } = a;
     if (idsError) return errorVideos;
     const result = await fetch(
       `${base}${videoBase}&id=${response.join()}&key=${YOUTUBE_API_KEY}&maxResults=12`
@@ -152,7 +166,9 @@ export const getVideos = async (): Promise<ErrorRes | { response: VideoRes[] }> 
         categoryName: catResponse ? catResponse.find((i) => i.id === categoryId).title : undefined,
         description : wordLimit(description),
         descriptionLong: description,
+        expanded: false,
         publishedAt,
+        starred: false,
         tags,
         title,
         thumbnails,

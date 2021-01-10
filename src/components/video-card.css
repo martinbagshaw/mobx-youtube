@@ -1,0 +1,47 @@
+/* @import "path/to/@blueprintjs/core/lib/scss/variables"; */
+.video-card {
+  position: relative;
+  padding-bottom: 60px;
+}
+/* need to set grid-auto-rows on parent to be height of 2nd tallest card */
+.video-card-expanded {
+  z-index: 1;
+}
+.video-card img {
+  max-width: 100%;
+}
+.video-card p {
+  word-wrap: break-word;
+}
+
+.category-container {
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.tag-container {
+  margin-bottom: 2rem;
+}
+.tag-container > span {
+  margin: 0.25rem;
+}
+
+.favourite-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.video-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 10px;
+}

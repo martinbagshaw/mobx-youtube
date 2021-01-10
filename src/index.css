@@ -15,13 +15,33 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
 }
 
+.filter-controls {
+  padding: 2rem;
+  box-sizing: border-box;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.center-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .grid {
   padding: 2rem;
   box-sizing: border-box;
+  align-items: flex-start;
   display: grid;
   grid-gap: 2rem;
   max-width: 1600px;
   margin: 0 auto;
+}
+
+/* probably easiest to do this inline */
+/* https://stackoverflow.com/questions/41916722/how-do-i-specify-row-heights-in-css-grid-layout */
+.grid-expanded {
+  grid-auto-rows: 400px;
 }
 
 @media only screen and (min-width: 600px) {
@@ -40,39 +60,4 @@ code {
   .grid {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
-}
-
-.video-card {
-  position: relative;
-  padding-bottom: 60px;
-}
-.video-card img {
-  max-width: 100%;
-}
-.video-card p {
-  word-wrap: break-word;
-}
-
-.category-container {
-  margin-top: 2rem;
-  margin-bottom: 2rem;
-}
-
-.tag-container {
-  margin-bottom: 2rem;
-}
-.tag-container > span {
-  margin: 0.25rem;
-}
-
-.favourite-container {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 10px;
-  box-sizing: border-box;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
 }

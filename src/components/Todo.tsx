@@ -1,22 +1,35 @@
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
-import { Card, Classes, Elevation } from '@blueprintjs/core';
+import { action, observable } from 'mobx';
+import { observer } from 'mobx-react';
+import {
+  Button,
+  Card,
+  Classes,
+  Elevation,
+  FormGroup,
+  InputGroup,
+} from '@blueprintjs/core';
 
 type TodoStore = {
-  addtodo: (string) => void;
+  addtodo: (todo: string) => void;
   todos: string[];
   todoCount: number;
 };
 
-@inject('TodoStore')
 @observer
 class Todo extends React.Component<{ TodoStore: TodoStore }> {
-  handleSubmit = (e) => {
+  @observable todo: string = null;
+
+  @action
+  handleChange = (todo: string) => {
+    this.todo = todo;
+  }
+
+  handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const todo = this.todo.value;
-    if (todo) {
-      this.props.TodoStore.addtodo(todo);
-      this.todo.value = '';
+    if (this.todo) {
+      this.props.TodoStore.addtodo(this.todo);
+      this.todo = '';
     }
   };
 
@@ -28,19 +41,16 @@ class Todo extends React.Component<{ TodoStore: TodoStore }> {
         <h2 className={Classes.HEADING}>You have {TodoStore.todoCount} todos</h2>
 
         <form onSubmit={(e) => this.handleSubmit(e)}>
-          <label className={Classes.LABEL} htmlFor="todo-control">
-            Enter a todo
-          </label>
-          <input
-            className={Classes.INPUT}
-            id="todo-control"
-            type="text"
-            placeholder="Enter a todo"
-            ref={(input) => (this.todo = input)}
-          />
-          <button className={Classes.BUTTON} intent="primary" type="submit">
+          <FormGroup label="Enter a todo" labelFor="todo-control">
+            <InputGroup
+              id="todo-control"
+              placeholder="Add todo..."
+              onChange={(e) => this.handleChange(e.target.value)}
+            />
+          </FormGroup>
+          <Button className={Classes.BUTTON} intent="primary" type="submit">
             Add todo
-          </button>
+          </Button>
         </form>
 
         <ul className={Classes.LIST}>
