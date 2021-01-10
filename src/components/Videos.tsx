@@ -1,112 +1,76 @@
 import * as React from 'react';
-import { inject, observer } from 'mobx-react';
+import { observer } from 'mobx-react';
 // import { toJS } from 'mobx';
-import {
-  Button,
-  Card,
-  Classes,
-  Elevation,
-  Intent,
-  Spinner,
-  Tag,
-} from '@blueprintjs/core';
+import { Checkbox, Icon, Intent, Spinner } from '@blueprintjs/core';
 
 import { VideoRes } from '../lib/types';
-
-const Category = ({ categoryName }): JSX.Element => (
-  <div className="category-container">
-    <h3 className={Classes.HEADING}>Category</h3>
-    {categoryName}
-  </div>
-);
-
-const Tags = ({ tags }): JSX.Element => {
-  return (
-    <React.Fragment>
-      {tags && tags.length && (
-        <React.Fragment>
-          <h3 className={Classes.HEADING}>Tags</h3>
-          <div className="tag-container">
-            {tags.map((i, idx) => (
-              <Tag key={idx} minimal>
-                {i}
-              </Tag>
-            ))}
-          </div>
-        </React.Fragment>
-      )}
-    </React.Fragment>
-  );
-};
+import VideoCard from './VideoCard';
 
 type VideoStore = {
   error: boolean;
+  expandCard: (id: string) => void;
   handleVideos: () => void;
+  showStarred: boolean;
+  setShowStarred: () => void;
+  starVideo: (id: string) => void;
   videos: VideoRes[];
-  todoCount: number;
 };
-
-@inject('VideoStore')
 @observer
-class Videos extends React.Component<VideoStore, {}> {
+class Videos extends React.Component<{ VideoStore: VideoStore }> {
   componentDidMount() {
     this.props.VideoStore.handleVideos();
   }
 
   render() {
     const {
-      VideoStore: { error, videos }, //starVideo
+      VideoStore: { error, expandCard, showStarred, setShowStarred, starVideo, videos },
     } = this.props;
 
     return (
-      <React.Fragment>
+      <div>
+        <div className="filter-controls">
+          <Checkbox
+            checked={showStarred}
+            disabled={videos.find((i) => i.starred) ? false : true}
+            onChange={setShowStarred}
+          >
+            <Icon
+              icon={showStarred ? 'star' : 'star-empty'}
+              style={{ marginRight: 4 }}
+            />
+            Show{showStarred ? ' All ' : ' Starred '}Videos
+          </Checkbox>
+        </div>
         {videos && videos.length ? (
-          videos.map((video, index) => {
-            const {
-              id,
-              // categoryId,
-              categoryName,
-              description,
-              // descriptionLong,
-              publishedAt,
-              tags,
-              title,
-              thumbnails: {
-                standard: { url },
-              },
-            } = video;
-            return (
-              <Card key={index} elevation={Elevation.TWO} className="video-card">
-                <img alt={title} src={url} />
-                <h3 className={Classes.HEADING}>{title}</h3>
-                <p>{description}</p>
-                <p>Published: {publishedAt}</p>
-                {categoryName && <Category categoryName={categoryName} />}
-                <Tags tags={tags} />
-                <a
-                  href={`https://www.youtube.com/watch?v=${id}`}
-                  target="_blank"
-                  rel="noopener"
-                >
-                  View Video
-                </a>
-                <Button
-                  className="favourite-container"
-                  fill
-                  rightIcon="star-empty"
-                  // onClick={() => starVideo(video)}
-                >
-                  Star Video
-                </Button>
-              </Card>
-            );
-          })
+          <div className="grid">
+            {videos.reduce((acc, video, index) => {
+              const card = (
+                <VideoCard
+                  key={index}
+                  {...video}
+                  starVideo={starVideo}
+                  expandCard={expandCard}
+                />
+              );
+              if (!showStarred) {
+                acc.push(card);
+              }
+              if (showStarred && video.starred) {
+                acc.push(card);
+              }
+              return acc;
+            }, [])}
+          </div>
         ) : error ? (
-          <p>no data found</p>
+          <div className="center-container">
+            <p>no data found</p>
+          </div>
         ) : (
-          <Spinner intent={Intent.PRIMARY} />
+          <div className="center-container">
+            <Spinner intent={Intent.PRIMARY} />
+          </div>
         )}
-      </React.Fragment>
+      </div>
     );
   }
 }

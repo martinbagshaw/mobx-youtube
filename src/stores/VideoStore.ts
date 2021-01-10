@@ -1,4 +1,7 @@
 import { observable, makeObservable, action } from 'mobx';
+import { toJS } from 'mobx';
+
+import { VideoRes } from '../lib/types';
 import { getVideos } from '../lib/getVideos';
 
 // Getters
@@ -6,23 +9,29 @@ import { getVideos } from '../lib/getVideos';
 // - getter may just be for getting assoicated data from data that is already loaded
 // - A knock on api call loads category information separately
 class VideoStore {
-  error = false;
-  loading = true;
-  videos = [];
-  // categories = [];
+  error: boolean = false;
+  loading: boolean = true;
+  showStarred: boolean = false;
+  videos: VideoRes[] = [];
 
   constructor() {
     makeObservable(this, {
       error: observable,
-      loading: observable,
+      expandCard: action,
       handleVideos: action,
-      videos: observable,
-      // handleCategories: action,
-      // categories: observable,
+      loading: observable,
+      showStarred: observable,
+      setShowStarred: action,
+      starVideo: action,
+      videos: observable
     });
   }
 
-  // mobx strict mode warning for this and the below function
+  expandCard = (id: string) => {
+    const selected = this.videos.find(i => i.id === id);
+    selected.expanded = !selected.expanded;
+  };
+
   handleVideos = async () => {
     const { error, response } = await getVideos();
     if (response) {
@@ -32,14 +41,15 @@ class VideoStore {
     this.loading = false;
   };
 
-  // separate categories API call:
-  // handleCategories = async (categories: string[]) => {
-  //   const { error, response } = await getCategories(categories);
-  //   if (response) {
-  //     this.categories = response;
-  //   }
-  //   if (error) console.log('categories API call error: ', error)
-  // };
+  starVideo = (id: string) => {
+    const selected = this.videos.find(i => i.id === id);
+    selected.starred = !selected.starred;
+  };
+
+  setShowStarred = () => {
+    this.showStarred = !this.showStarred;
+  }
+
 }
 
 export default new VideoStore();

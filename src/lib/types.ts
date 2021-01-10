@@ -17,7 +17,9 @@ export type VideoRes = {
   categoryName: string;
   description: string;
   descriptionLong: string;
+  expanded: boolean;
   publishedAt: string;
+  starred: boolean;
   tags: string;
   title: string;
   thumbnails: Thumbnails;
